@@ -1,18 +1,24 @@
 {
   "name": "comet-chat",
   "version": "1.0.0",
+  "description": "A test project - the caht written on vue.js with server side rendering",
+  "author": "Viacheslav Boiko &lt;ekvaserega@gmail.com&gt;",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
     "build": "nuxt build",
-    "start": "nuxt start",
+    "start": "cross-env NODE_ENV=production node server/index.js",
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "nuxt": "^2.14.6"
+    "cross-env": "^5.2.0",
+    "express": "^4.16.4",
+    "@nuxtjs/vuetify": "0.5.5",
+    "nuxt": "^2.0.0"
   },
   "devDependencies": {
-    "@nuxtjs/vuetify": "^1.11.2"
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "nodemon": "^1.18.9"
   }
 }
