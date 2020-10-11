@@ -1,6 +1,6 @@
 # comet-chat
 
-> A test project - the caht written on vue.js with server side rendering
+> A test project - the chat written on vue.js with server side rendering
 
 ## Build Setup
 
