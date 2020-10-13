@@ -1,117 +1,71 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-tile
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
+  <v-app app>
+    <v-navigation-drawer app v-model="drawer" mobile-breakpoint="700">
+      <v-list subheader>
+        <v-subheader>Room members</v-subheader>
+        <v-list-item
+          v-for="u in users"
+          :key="u.id"
+          @click=""
         >
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title" />
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title v-text="u.name"></v-list-item-title>
+          </v-list-item-content>
+
+          <v-list-item-icon>
+            <v-icon :color="u.id === user.id ? 'primary' : 'grey'">chat_bubble</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
-      <v-toolbar-side-icon @click="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>{{ `chevron_${miniVariant ? 'right' : 'left'}` }}</v-icon>
+
+    <v-app-bar app dense>
+      <v-app-bar-nav-icon @click="openDrawer" v-if="!drawer"/>
+      <v-btn icon v-else @click="closeDrawer">
+        <v-icon>close</v-icon>
       </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>web</v-icon>
+
+      <v-btn icon @click="exit">
+        <v-icon>arrow_back</v-icon>
       </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>menu</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-content>
-      <v-container>
-        <nuxt />
-      </v-container>
-    </v-content>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-tile @click.native="right = !right">
-          <v-list-tile-action>
-            <v-icon light>
-              compare_arrows
-            </v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer
-      :fixed="fixed"
-      app
-    >
-      <span>&copy; 2019</span>
-    </v-footer>
+
+      <v-toolbar-title>Chat Room: {{ user.room }}</v-toolbar-title>
+    </v-app-bar>
+    <v-main>
+      <div style="height: 100%;">
+        <nuxt/>
+      </div>
+    </v-main>
   </v-app>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'bubble_chart',
-          title: 'Inspire',
-          to: '/inspire'
-        }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+  import { mapState, mapMutations } from 'vuex'
+  export default {
+    data: () => ({
+      drawer: true
+    }),
+    computed: mapState(['user', 'users']),
+    methods: {
+      openDrawer() {
+        this.drawer = true
+      },
+      closeDrawer() {
+        this.drawer = false
+      },
+      ...mapMutations(['clearData']),
+      exit() {
+        this.$socket.emit('userLeft', this.user.id, () => {
+          this.$router.push('/?msg=exit')
+          this.clearData()
+        })
+      }
     }
   }
-}
 </script>
+
+<style lang="stylus">
+  .v-application .primary--text {
+    color #1dac9e !important
+  }
+</style>

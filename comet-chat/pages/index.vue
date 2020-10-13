@@ -1,93 +1,113 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <div class="text-xs-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
+  <v-layout  column  justify-center  align-center >
+    <v-flex class="reg-card" xs12 sm8 >
+      <v-card min-width="100">
+        <v-card-title><h2>Enter to the Comet Chat</h2></v-card-title>
         <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
           >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-          >
-            Nuxt GitHub
-          </a>
+            <v-text-field
+              v-model="name"
+              :counter="14"
+              :rules="nameRules"
+              label="Name"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="room"
+              :rules="roomRules"
+              label="The Room name"
+              required
+            ></v-text-field>
+            <br/>
+            <v-btn
+              :disabled="!valid"
+              color="success"
+              class="mr-4"
+              @click="submit"
+            >
+              <span v-if="!valid">
+                Fill form correctly!
+              </span>
+
+              <span v-else>
+                Let's go!
+              </span>
+            </v-btn>
+          </v-form>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            flat
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
+  import { mapMutations } from 'vuex'
 
-export default {
-  components: {
-    Logo,
-    VuetifyLogo
+  const nameRequiredTxt = 'Name is required'
+  const nameMaxLength = 14
+  const nameOutOfLengthTxt = `Name must be less than ${nameMaxLength} characters`
+  const enterRoomNameTxt = 'Enter the Room name'
+
+  export default {
+    layout: "empty",
+    head: {
+      title: 'Welcome to the Comet Chat!'
+    },
+    sockets: {
+      connect: function () {
+        console.log('Client IO connected!')
+      }
+    },
+    data: () => ({
+      valid: true,
+      name: '',
+      nameRules: [
+        v => !!v || nameRequiredTxt,
+        v => (v && v.length <= nameMaxLength) || nameOutOfLengthTxt,
+      ],
+      room: '',
+      roomRules: [
+        v => !!v || enterRoomNameTxt
+      ],
+    }),
+
+    methods: {
+      ...mapMutations(['setUser']),
+
+      submit () {
+        if(this.$refs.form.validate()) {
+          const user = {
+            name: this.name,
+            room: this.room
+          }
+
+          this.$socket.emit('userConnected', user, data => {
+            if(typeof  data === 'string') {
+              console.error(data)
+            } else {
+              user.id = data.userId
+              this.setUser(user)
+              this.$router.push('/chat')
+            }
+          })
+        }
+      },
+    },
   }
-}
 </script>
+
+<style lang="stylus">
+
+  .reg-card
+    width 50%
+    margin-top: 1rem
+
+  .v-application .success
+    background-color #1dac9e !important
+
+</style>
