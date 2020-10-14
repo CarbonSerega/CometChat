@@ -46,6 +46,7 @@
       drawer: true
     }),
     computed: mapState(['user', 'users']),
+
     methods: {
       openDrawer() {
         this.drawer = true
@@ -65,7 +66,10 @@
 </script>
 
 <style lang="stylus">
-  .v-application .primary--text {
+  .v-application .primary--text
     color #1dac9e !important
+
+  html {
+    overflow-y hidden
   }
 </style>

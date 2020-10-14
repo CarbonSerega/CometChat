@@ -1,9 +1,11 @@
 <template>
   <div class="chat-container">
-    <div class="chat">
-      <Message v-for="(msg, i) in messages" :key="msg.id + i"
+    <div class="chat" ref="block">
+      <Message v-for="(msg, i) in messages"
+               :key="i"
                :name="msg.name"
                :text="msg.text"
+               :date="msg.date"
                :owner="msg.id === user.id" />
     </div>
     <div class="chat-form">
@@ -20,38 +22,43 @@
   export default {
     components: { Message, ChatInput },
     middleware: ['chat'],
-      head() {
-        return { title: `Chat room ${this.user.room}` }
-      },
-      computed: mapState(['user', 'messages']),
-      comments: { Message }
+    head() {
+      return { title: `Chat room ${this.user.room}` }
+    },
+    computed: mapState(['user', 'messages']),
+    comments: { Message },
+    watch: {
+      messages() {
+        setTimeout(() => {
+          if(this.$refs.block) {
+            this.$refs.block.scrollTop = this.$refs.block.scrollHeight
+          }
+        })
+      }
+    }
   }
 </script>
 
-<style scoped>
-  .chat-container {
-    position: relative;
-    height: 100%;
-  }
+<style scoped lang="stylus">
+  .chat-container
+    position: relative
+    height: 100%
 
-  .chat {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 80px;
-    padding: 1rem;
-    overflow-y: auto;
-  }
+  .chat
+    position: absolute
+    left: 0
+    right: 0
+    top: 0
+    bottom: 80px
+    padding: 1rem
+    overflow-y: auto
 
-  .chat-form {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 1rem;
-    height: 80px;
-  }
-
+  .chat-form
+    position: absolute
+    left: 0
+    right: 0
+    bottom: 0
+    padding: 1rem
+    height: 80px
 
 </style>

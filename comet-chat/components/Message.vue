@@ -6,7 +6,15 @@
 
       <div v-else class="msg-container">
         <div class="msg" :class="{ owner }">
-          <strong>{{ name }}</strong>
+          <div class="msg-title">
+            <div>
+              <strong>{{ name }}</strong>
+            </div>
+            <div>
+              <h5>{{ preparedDate }}</h5>
+            </div>
+          </div>
+          <br/>
           <p>{{ text }}</p>
         </div>
       </div>
@@ -18,12 +26,25 @@
       props: {
         name: String,
         text: String,
+        date: Number,
         owner: {
           type: Boolean,
           default: false
         }
+      },
+
+      computed: {
+        preparedDate() {
+          const date = new Date(this.date)
+          const isToday = date.getDay() === new Date().getDay()
+          return formatNumbers(date.getHours()) + ':' + formatNumbers(date.getMinutes()) + (isToday ? '' : ', ' + getDayName(date))
+        }
       }
   }
+
+  const getDayName = (date) => (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])[date.getDay()]
+  const formatNumbers = (num) => num < 10 ? '0' + num : num
+
 </script>
 
 <style lang="stylus" scoped>
@@ -38,11 +59,11 @@
     }
   }
 
-  .msg-container {
+  .msg-container
     display flex
     flex-direction column
 
-    .msg {
+    .msg
       position: relative;
       padding 1rem
       width 50%
@@ -51,16 +72,15 @@
       margin-bottom 1rem
       color: white
 
-      p {
-        margin-bottom 0
-      }
-    }
+      .msg-title
+        display flex
+        justify-content space-between
 
-    .owner {
+      p
+        margin-bottom 0
+
+    .owner
       background: #d9d9d9
       color #6d6d6d
       align-self flex-end
-
-    }
-  }
 </style>

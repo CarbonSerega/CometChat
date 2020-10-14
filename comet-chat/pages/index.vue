@@ -30,11 +30,7 @@
               class="mr-4"
               @click="submit"
             >
-              <span v-if="!valid">
-                Fill form correctly!
-              </span>
-
-              <span v-else>
+              <span>
                 Let's go!
               </span>
             </v-btn>
@@ -43,6 +39,7 @@
       </v-card>
     </v-flex>
   </v-layout>
+
 </template>
 
 <script>
@@ -52,11 +49,12 @@
   const nameMaxLength = 14
   const nameOutOfLengthTxt = `Name must be less than ${nameMaxLength} characters`
   const enterRoomNameTxt = 'Enter the Room name'
+  const welcomeTitle = 'Welcome to the Comet Chat!'
 
   export default {
     layout: "empty",
     head: {
-      title: 'Welcome to the Comet Chat!'
+      title: welcomeTitle
     },
     sockets: {
       connect: function () {
@@ -87,13 +85,9 @@
           }
 
           this.$socket.emit('userConnected', user, data => {
-            if(typeof  data === 'string') {
-              console.error(data)
-            } else {
               user.id = data.userId
               this.setUser(user)
               this.$router.push('/chat')
-            }
           })
         }
       },

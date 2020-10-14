@@ -3,7 +3,7 @@ const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 const users = require('./RoomController')()
 
-const msgHelper = (name, text, id) => ({ name, text, id })
+const msgHelper = (name, text, id, date = null) => ({ name, text, id, date })
 
 io.on('connection', socket => {
   socket.on('userConnected', (data, callback) => {
@@ -21,7 +21,7 @@ io.on('connection', socket => {
     callback({ userId: socket.id })
 
     io.to(data.room).emit('updateUsers', users.getAll(data.room))
-    socket.emit('newMsg', msgHelper('admin', `Welcome ${data.name}`))
+    socket.emit('newMsg', msgHelper('admin', `The user ${data.name} joined to the room!`))
     socket.broadcast.to(data.room)
       .emit('newMsg', msgHelper('admin', `User ${data.name} joined!`))
   })
@@ -34,7 +34,7 @@ io.on('connection', socket => {
     const user = users.get(data.id)
 
     if(user) {
-      io.to(user.room).emit('newMsg', msgHelper(user.name, data.text, data.id))
+      io.to(user.room).emit('newMsg', msgHelper(user.name, data.text, data.id, data.date))
     }
     callback()
 
