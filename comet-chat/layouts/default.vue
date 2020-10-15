@@ -13,7 +13,7 @@
           </v-list-item-content>
 
           <v-list-item-icon>
-            <img class="user-avatar" :src="u.img" :alt="u.id">
+            <img class="user-avatar" v-if="u.img" :src="u.img" :alt="u.id">
           </v-list-item-icon>
         </v-list-item>
       </v-list>
