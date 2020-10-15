@@ -13,7 +13,7 @@
           </v-list-item-content>
 
           <v-list-item-icon>
-            <v-icon :color="u.id === user.id ? 'primary' : 'grey'">chat_bubble</v-icon>
+            <img class="user-avatar" :src="u.img" :alt="u.id">
           </v-list-item-icon>
         </v-list-item>
       </v-list>
@@ -66,10 +66,15 @@
 </script>
 
 <style lang="stylus">
+  html
+    overflow-y hidden
+
   .v-application .primary--text
     color #1dac9e !important
 
-  html {
-    overflow-y hidden
-  }
+  .user-avatar
+    width: 40px
+    height 40px
+    border-radius 100px
+
 </style>

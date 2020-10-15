@@ -36,13 +36,12 @@
       computed: {
         preparedDate() {
           const date = new Date(this.date)
-          const isToday = date.getDay() === new Date().getDay()
-          return formatNumbers(date.getHours()) + ':' + formatNumbers(date.getMinutes()) + (isToday ? '' : ', ' + getDayName(date))
+          return date.getHours() + ':' + formatNumbers(date.getMinutes())
         }
       }
   }
 
-  const getDayName = (date) => (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])[date.getDay()]
+  //const getDayName = (date) => (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])[date.getDay()]
   const formatNumbers = (num) => num < 10 ? '0' + num : num
 
 </script>
@@ -83,4 +82,10 @@
       background: #d9d9d9
       color #6d6d6d
       align-self flex-end
+
+  .user-avatar
+    margin 0 2rem 0 0
+    width 30px
+    height 30px
+    border-radius 100px
 </style>
