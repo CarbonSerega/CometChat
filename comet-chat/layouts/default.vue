@@ -8,13 +8,15 @@
           :key="u.id"
           @click=""
         >
-          <v-list-item-content>
-            <v-list-item-title v-text="u.name"></v-list-item-title>
-          </v-list-item-content>
 
           <v-list-item-icon>
             <img class="user-avatar" v-if="u.img" :src="u.img" :alt="u.id">
           </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title v-text="u.name"></v-list-item-title>
+          </v-list-item-content>
+
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
